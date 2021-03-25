@@ -3,10 +3,8 @@ Estrutura de pastas:
 
 ```
 ├── README.md
-│
 └── notebook
-    ├── emprestimo01.ipynb
-    └── emprestimo02-tad.ipynb
+    └── emprestimo01.ipynb
 ```
 
 ## [Notebook 1 sobre Empréstimos](notebook/emprestimo01.ipynb)
