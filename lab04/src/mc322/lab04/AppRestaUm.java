@@ -15,7 +15,6 @@ public class AppRestaUm {
 		
 		System.out.println("Tabuleiro inicial:");
 		boardState = board.presentBoard();
-		System.out.println(boardState);
 		jogo[i] = boardState;
 		i++;
 		
@@ -23,7 +22,6 @@ public class AppRestaUm {
 			movement = commands[i - 1].split(":");
 			board.movePiece(movement[0], movement[1]);
 			boardState = board.presentBoard();
-			System.out.println(boardState);
 			jogo[i] = boardState;
 			i++;
 		}

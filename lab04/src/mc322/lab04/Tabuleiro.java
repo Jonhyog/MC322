@@ -103,22 +103,25 @@ public class Tabuleiro {
 	 * @return true se o movimento é valido. Caso contrário false.
 	 */
 	public boolean isValidMove(int source[], int target[], int vDir[]) {
+		Peca neighbour;
+		
 		// Movimento na diagonal
 		if (vDir[0] != 0 && vDir[1] != 0)
 			return false;
 		
-		// Movimento para fora do tabuleiro
-		if (target[0] >= this.vPieces[0].length || target[0] < 0)
+		// Source ou target fora do tabuleiro
+		if ((source[0] < 0 || source[0] >= vPieces[0].length) || (source[1] < 0 || source[1] >= vPieces.length))
 			return false;
-		
-		if (target[1] >= this.vPieces.length || target[1] < 0)
+		if (( target[0] < 0 || target[0] >= vPieces[0].length) || (target[1] < 0 || target[1] >= vPieces.length))
 			return false;
 		
 		// Verifica se eh Peca em source esta vazia ou eh espaco nulo
-		if (this.vPieces[target[1]][target[0]] == null)
+		// ou se target nao eh vazio
+		if (this.vPieces[source[1]][source[0]] == null || this.vPieces[target[1]][target[0]] == null)
 			return false;
-		
 		if (this.vPieces[source[1]][source[0]].alive == false)
+			return false;
+		if (this.vPieces[target[1]][target[0]].alive == true)
 			return false;
 		
 		// Movimento de alfa-x para alfa-x
@@ -131,7 +134,12 @@ public class Tabuleiro {
 		else if (vDir[1]*vDir[1] != 4 && vDir[1] != 0)
 			return false;
 		// Sempre se pula uma peca. Logo, se espera norma^2 = 2
-			
+		
+		// Verifica se tem peca intermediaria
+		neighbour = getPiece(source[0], source[1]).getNeighbour(vDir);
+		if (neighbour.alive == false)
+			return false;
+		
 		return true;
 	}
 	
@@ -172,7 +180,9 @@ public class Tabuleiro {
 	}
 	
 	/**
-	 * Apresenta o estado atual do tableiro.
+	 * Apresenta na tela o estado atual do tabuleiro formatado
+	 * com os eixos e retorna a String do estado do tabuleiro
+	 * sem formatação.
 	 * 
 	 * @return string representando o estado do tabuleiro
 	 */
@@ -182,24 +192,29 @@ public class Tabuleiro {
 		Peca piece;
 		
 		for (int i = 0; i < vPieces.length; i++) {
-			board += vPieces.length - i;						// Add indicador numerico a esquerda
-			board += ' ';
+			System.out.print((vPieces.length - i) + " "); // Exibe eixo de números
 			for (int j = 0; j < vPieces[0].length; j++) {
 				piece = vPieces[i][j];
-				board += ' ';
-				if (piece == null)
+				System.out.print(" ");
+				if (piece == null) {
+					System.out.print(" ");
 					board += ' ';
-				else
+				}		
+				else {
+					System.out.print(piece.presentPiece());
 					board += piece.presentPiece();
+				}	
 			}
+			System.out.print("\n");
 			board += '\n';
 		}
 		
-		board += "  ";											// Add indicadores de letras em baixo
+		// Exibe eixo de letras
+		System.out.print("  ");
 		for (int i = 0; i < vPieces.length; i++) {
-			board += ' ';
-			board += alphabet.charAt(i);
+			System.out.print(" " + alphabet.charAt(i));
 		}
+		System.out.print("\n");
 		board += '\n';
 		
 		return board;
