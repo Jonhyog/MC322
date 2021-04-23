@@ -4,7 +4,18 @@ public class Dama {
     boolean branco;
 
     Dama(boolean pBranco){
-        boolean branco = pBranco;
+        branco = pBranco;
+    }
+    
+    public boolean getColor() {
+    	return this.branco;
+    }
+    
+    public char presentPiece() {
+    	if (branco)
+    		return 'B';
+    	else
+    		return 'P';
     }
 
     boolean isValid(){
