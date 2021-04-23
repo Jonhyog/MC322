@@ -2,6 +2,6 @@
 
 Laboratório realizado em dupla com [José](https://github.com/jose219081/mc322).
 
-## Arquivos Java
+## Arquivos Java sobre Jogo de Damas
 
-[Aqui](/src/mc322/lab05)
+[Aqui](src/mc322/lab05)
