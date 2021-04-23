@@ -18,15 +18,30 @@ public class Dama {
     		return 'P';
     }
 
-    boolean isValid(){
+    boolean isValid(int []source, int []target, boolean comer){
         boolean valid = false;
-
+        boolean compatible;
+        int y, x;
+        y = Math.abs(source[0] - target[0]);
+        x = Math.abs(source[1] - target[1]);
+        compatible = isCompatible(y, x);
+        if(compatible == false){
+            return false;
+        }else{
+            if(comer == true){
+                valid = true;
+            }else if(comer == false){
+                valid = true;
+            }
+        }
         return valid;
     }
 
-    boolean isCompatible(){
+    boolean isCompatible(int x, int y){
         boolean compatible = false;
-
+        if(y == x){
+            compatible = true;
+        }
         return compatible;
     }
 }
