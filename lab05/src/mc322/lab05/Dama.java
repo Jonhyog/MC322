@@ -22,8 +22,8 @@ public class Dama {
         boolean valid = false;
         boolean compatible;
         int y, x;
-        y = Math.abs(source[0] - target[0]);
-        x = Math.abs(source[1] - target[1]);
+        y = target[0] - source[0];
+        x = Math.abs(target[1] - source[1]);
         compatible = isCompatible(x, y);
 
         if(compatible == false){
@@ -31,15 +31,12 @@ public class Dama {
         }else{
             valid = true;
         }
-
-            }
-        }
         return valid;
     }
 
     boolean isCompatible(int x, int y){
         boolean compatible = false;
-        if(y == x){
+        if(x == Math.abs(y)){
             compatible = true;
         }
         return compatible;

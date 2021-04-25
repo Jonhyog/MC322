@@ -25,15 +25,19 @@ public class Peao {
         boolean compatible;
         int y, x;
         y = target[0] - source[0];
-        x = Math.abs(source[1] - target[1]);
+        x = Math.abs(target[1] - source[1]);
         compatible = isCompatible(x, y);
 
         if(compatible == false){
             return false;
         }else{
-            if(comer == true && y == 2 && x == 2){
+            if((branco) && comer == true && y == 2 && x == 2){
                 valid = true;
-            }else if(comer == false && y == 1 && x == 1){
+            }else if((!branco) && comer == true && y == -2 && x == 2){
+                valid = true;
+            }else if((branco) && comer == false && y == 1 && x == 1){
+                valid = true;
+            }else if((!branco) && comer == false && y == -1 && x == 1){
                 valid = true;
             }
         }
@@ -42,9 +46,12 @@ public class Peao {
 
     boolean isCompatible(int x, int y){
         boolean compatible = false;
-        if(y == x && y < 3 && y > 0 && x < 3 && x > 0){
-            compatible = true;
-        }
+        if (x == Math.abs(y)) {
+            if ((branco) && (y == -2 || y == -1) && (x == 2 || x == 1))
+                return true;
+            else if ((!branco) && (y == 2 || y == 1) && (x == 2 || x == 1))
+                return true;
+        }        
         return compatible;
     }
 }
