@@ -24,7 +24,7 @@ public class Peao {
         boolean valid = false;
         boolean compatible;
         int y, x;
-        y = Math.abs(source[0] - target[0]);
+        y = target[0] - source[0];
         x = Math.abs(source[1] - target[1]);
         compatible = isCompatible(x, y);
 
