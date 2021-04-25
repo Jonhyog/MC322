@@ -28,10 +28,9 @@ public class Dama {
         if(compatible == false){
             return false;
         }else{
-            if(comer == true){
-                valid = true;
-            }else if(comer == false){
-                valid = true;
+            valid = true;
+        }
+
             }
         }
         return valid;
