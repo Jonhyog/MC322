@@ -24,7 +24,8 @@ public class Dama {
         int y, x;
         y = Math.abs(source[0] - target[0]);
         x = Math.abs(source[1] - target[1]);
-        compatible = isCompatible(y, x);
+        compatible = isCompatible(x, y);
+
         if(compatible == false){
             return false;
         }else{
