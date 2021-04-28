@@ -21,14 +21,26 @@ public class Tabuleiro {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (i < 3 && (j + i) % 2 != 0)
-					vPeoes[i][j] = new Peao(false);
+					vPeoes[i][j] = new Peao(false, j, i);
 				else if (i > 4 && (j + i) % 2 != 0)
-					vPeoes[i][j] = new Peao(true);
+					vPeoes[i][j] = new Peao(true, j, i);
 				else
 					vPeoes[i][j] = null;
 				vDamas[i][j] = null;
 			}
 		}
+	}
+	
+	private Peao getPawn(int x, int y) {
+		if ((x >= 0 && x < 8) && (y >= 0 && y < 8))
+			return vPeoes[y][x];
+		return null;
+	}
+	
+	private Dama getDama(int x, int y) {
+		if ((x >= 0 && x < 8) && (y >= 0 && y < 8))
+			return vDamas[y][x];
+		return null;
 	}
 	
 	/**
@@ -61,12 +73,41 @@ public class Tabuleiro {
 	 * @param target posicao destino da peao no tabuleiro
 	 */
 	private void move(Peao pc, int source[], int target[]) {
-		if (pc.branco != turno) {
-			System.out.println("Movimento Inválido. Turno das " + (turno ? "brancas." : "pretas"));
+		int deltaX, deltaY, fatorY, fatorX;
+		boolean valido;
+		Peao possivelCapturaPeao;
+		Dama possivelCapturaDama;
+		
+		if (pc.getColor() != turno) {
+			System.out.println("Movimento Invalido. Turno das " + (turno ? "brancas." : "pretas"));
 			return;
 		}
-		// FIX-ME: Verificar se eh valido antes de mover
-			// Se movimento eh valido, determinar se ocorre captura
+		
+		// Determina peca em possivel posicao de captura
+		deltaX = target[0] - source[0];
+		deltaY = target[1] - source[1];
+		
+		fatorY = deltaY > 0 ? 1 : -1;
+		fatorX = deltaX > 0 ? 1 : -1;
+		
+		possivelCapturaPeao = getPawn(source[0] + 1 * fatorX, source[1] + 1 * fatorY);
+		possivelCapturaDama = getDama(source[0] + 1 * fatorX, source[1] + 1 * fatorY);
+		
+		if (possivelCapturaPeao != null)
+			valido = pc.isValid(source, target, possivelCapturaPeao);
+		else
+			valido = pc.isValid(source, target, possivelCapturaDama);
+			
+		if (!valido) {
+			System.out.println("Movimento Invalido.");
+			return;
+		}
+		
+		// Capturar ponteiro null eh o mesmo que nao capturar
+		capture(possivelCapturaPeao, new int[] {source[0] + 1 * fatorX, source[1] + 1 * fatorY});
+		capture(possivelCapturaDama, new int[] {source[0] + 1 * fatorX, source[1] + 1 * fatorY});
+		
+		
 		vPeoes[source[1]][source[0]] = null;
 		vPeoes[target[1]][target[0]] = pc;
 		
@@ -75,12 +116,26 @@ public class Tabuleiro {
 		nextTurn();
 	}
 	
+	/**
+	 * Captura a dama na posicao pos (x, y). Ou seja,
+	 * remove a dama nessa posicao do tabuleiro.
+	 * 
+	 * @param pc
+	 * @param pos
+	 */
 	private void capture(Dama pc, int pos[]) {
-		
+		this.vDamas[pos[1]][pos[0]] = null;
 	}
 	
+	/**
+	 * Captura o peao na posicao pos (x, y). Ou seja,
+	 * remove o peao nessa posicao do tabuleiro.
+	 * 
+	 * @param pc
+	 * @param pos
+	 */
 	private void capture(Peao pc, int pos[]) {
-		
+		this.vPeoes[pos[1]][pos[0]] = null;
 	}
 	
 	/**
@@ -93,7 +148,7 @@ public class Tabuleiro {
 	 */
 	private void upgrade(Peao pc, int pos[]) {
 		vPeoes[pos[1]][pos[0]] = null;
-		vDamas[pos[1]][pos[0]] = new Dama(pc.getColor());
+		vDamas[pos[1]][pos[0]] = new Dama(pc.getColor(), pos[0], pos[1]);
 	}
 	
 	/**
@@ -130,11 +185,13 @@ public class Tabuleiro {
 		if (vPeoes[sourceCord[1]][sourceCord[0]] != null) {
 			peao = vPeoes[sourceCord[1]][sourceCord[0]];
 			move(peao, sourceCord, targetCord);
-		}
-		
-		if (vDamas[sourceCord[1]][sourceCord[0]] != null) {
+		} 
+		else if (vDamas[sourceCord[1]][sourceCord[0]] != null) {
 			dama = vDamas[sourceCord[1]][sourceCord[0]];
 			move(dama, sourceCord, targetCord);
+		}
+		else {
+			System.out.println("Movimento Invalido. Selecione uma peca valida");
 		}
 		
 	}
