@@ -1,29 +1,23 @@
 package mc322.lab05;
 
 public class AppDama {
-	public static void main(String args[]) {
+	public static void executaJogo() {
+		String pathPartida = "testes/teste02.csv", commands[], movement[];
 		Tabuleiro board = new Tabuleiro();
+		CSVReader csv = new CSVReader();
+		
+		csv.setDataSource(pathPartida);
+		commands = csv.requestCommands();
+		
 		System.out.println("Tabuleiro Inicial:");
 		board.presentBoard();
-		
-		board.movePiece("b6", "c5");
-		board.presentBoard();
-		
-		board.movePiece("c3", "d4");
-		board.presentBoard();
-		
-		board.movePiece("e3", "f4");
-		board.presentBoard();
-		
-		board.movePiece("b6", "c5");
-		board.presentBoard();
-		
-		// Movimento Invalido. Teste upgrade brancas.
-		board.movePiece("a1", "a8");
-		board.presentBoard();
-		
-		// Movimento Invalido. Teste upgrade pretas.
-		board.movePiece("b8", "b1");
-		board.presentBoard();
+		for (int i = 0; i < commands.length; i++) {
+			movement = commands[i].split(":");
+			board.movePiece(movement[0], movement[1]);
+			board.presentBoard();
+		}
+	}
+	public static void main(String args[]) {
+		executaJogo();
 	}
 }
