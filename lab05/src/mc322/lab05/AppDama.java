@@ -2,7 +2,7 @@ package mc322.lab05;
 
 public class AppDama {
 	public static void executaJogo() {
-		String pathPartida = "testes/teste02.csv", commands[], movement[];
+		String pathPartida = "testes/teste07.csv", commands[], movement[];
 		Tabuleiro board = new Tabuleiro();
 		CSVReader csv = new CSVReader();
 		

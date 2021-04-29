@@ -52,13 +52,45 @@ public class Tabuleiro {
 	 * @param target posicao destino da dama no tabuleiro
 	 */
 	private void move(Dama pc, int source[], int target[]) {
+		int deltaX, deltaY, fatorX, fatorY, i;
+		Peao caminhoPeoes[];
+		Dama caminhoDamas[];
+		
 		if (pc.branco != turno) {
 			System.out.println("Movimento Inválido. Turno das " + (turno ? "brancas." : "pretas"));
 			return;
 		}
 		
-		// FIX-ME: Verificar se eh valido antes de mover
-			// Se movimento eh valido, determinar se ocorre captura
+		// Determina peca em possivel posicao de captura
+		deltaX = target[0] - source[0];
+		deltaY = target[1] - source[1];
+				
+		fatorY = target[1] - source[1] > 0 ? 1 : -1;
+		fatorX = target[0] - source[0] > 0 ? 1 : -1;
+		
+		// Gera caminho. Multiplicar pelo fator garante que tamanho > 0
+		caminhoPeoes = new Peao[deltaX * fatorX];
+		caminhoDamas = new Dama[deltaY * fatorY];
+		
+		i = 1;
+		while (source[0] + i * fatorX != target[0] + 1 * fatorX && source[1] + i * fatorY != target[1] + 1 * fatorY) {
+			caminhoPeoes[i-1] = getPawn(source[0] + i * fatorX, source[1] + i * fatorY);
+			caminhoDamas[i-1] = getDama(source[0] + i * fatorX, source[1] + i * fatorY);
+			i++;
+		}
+		
+		if (!pc.isValid(source, target, caminhoPeoes, caminhoDamas)) {
+			System.out.println("Movimento Invalido.");
+			return;
+		}
+		
+		for (int j = 0; j < caminhoPeoes.length; j++) {
+			if (caminhoPeoes[j] != null)
+				capture(caminhoPeoes[j], caminhoPeoes[j].getPosition());
+			if (caminhoDamas[j] != null)
+				capture(caminhoDamas[j], caminhoDamas[j].getPosition());
+		}
+		
 		vDamas[source[1]][source[0]] = null;
 		vDamas[target[1]][target[0]] = pc;
 		nextTurn();
