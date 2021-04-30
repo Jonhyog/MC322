@@ -3,7 +3,11 @@ package mc322.lab05b;
 import java.lang.Math;
 
 public class Dama extends Peca{
-
+	
+	Dama(boolean pBranco, int x, int y) {
+		super(pBranco, x, y);
+	}
+	
     public char presentPiece() {
     	if (branco)
     		return 'B';

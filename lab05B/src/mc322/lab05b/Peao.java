@@ -3,6 +3,11 @@ package mc322.lab05b;
 import java.lang.Math;
 
 public class Peao extends Peca{
+	
+	Peao(boolean pBranco, int x, int y) {
+		super(pBranco, x, y);
+	}
+	
     boolean isValid(int []source, int []target, Peca []caminhoPecas){
         boolean valid = true;
         boolean compatible;
