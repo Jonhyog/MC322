@@ -30,11 +30,26 @@ public class Peca {
     	return new int[] {x, y};
     }
 
-    boolean isValid(int []source, int []target, Peca []caminhoPecas){
+    public boolean isValid(int []source, int []target, Peca []caminhoPecas){
+    	for (int i = 0; i < caminhoPecas.length; i++) {
+        	if (caminhoPecas[i] != null) {
+        		// Pecas da mesma cor
+        		if (caminhoPecas[i] != null && caminhoPecas[i].getColor() == branco)
+        			return false;
+        		
+        		// Se tabuleiro acaba nao ha espaco para movimento
+        		if (i + 1 >= caminhoPecas.length)
+        			return false;
+        		
+        		// Verifica se ha pelo menos um espaco vazio
+        		if (caminhoPecas[i+1] != null)
+        			return false;
+        	}
+        }
         return true;
     }
 
-    boolean isCompatible(int x, int y){
+    private boolean isCompatible(int x, int y){
         return true;
     }
 }
