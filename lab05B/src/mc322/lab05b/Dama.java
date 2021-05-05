@@ -1,7 +1,5 @@
 package mc322.lab05b;
 
-import java.lang.Math;
-
 public class Dama extends Peca{
 	
 	Dama(boolean pBranco, int x, int y) {
@@ -15,7 +13,7 @@ public class Dama extends Peca{
     		return 'P';
     }
 
-    boolean isValid(int []source, int []target, Peca []caminhoPecas){
+    public boolean isValid(int []source, int []target, Peca []caminhoPecas){
         boolean valid = true;
         boolean compatible;
         int y, x;
@@ -26,21 +24,7 @@ public class Dama extends Peca{
         if(compatible == false)
             return false;
         
-        for (int i = 0; i < caminhoPecas.length; i++) {
-        	if (caminhoPecas[i] != null) {
-        		// Pecas da mesma cor
-        		if (caminhoPecas[i] != null && caminhoPecas[i].getColor() == branco)
-        			return false;
-        		
-        		// Se tabuleiro acaba nao ha espaco para movimento
-        		if (i + 1 >= caminhoPecas.length)
-        			return false;
-        		
-        		// Verifica se ha pelo menos um espaco vazio
-        		if (caminhoPecas[i+1] != null)
-        			return false;
-        	}
-        }
+        valid = super.isValid(source, target, caminhoPecas);
         
         if (valid)
         	updatePosition(target[0], target[1]);
@@ -48,7 +32,7 @@ public class Dama extends Peca{
         return valid;
     }
 
-    boolean isCompatible(int x, int y){
+    private boolean isCompatible(int x, int y){
         boolean compatible = false;
         if(x == Math.abs(y)){
             compatible = true;

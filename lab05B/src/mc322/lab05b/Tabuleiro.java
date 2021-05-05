@@ -2,7 +2,8 @@ package mc322.lab05b;
 
 public class Tabuleiro {
 	private int x, y;
-	private boolean turno;
+	private boolean turno, erro;
+	private int[] lastCapture;
 	private Peca vPecas[][];
 	private MovementParser parser;
 	
@@ -14,6 +15,8 @@ public class Tabuleiro {
 		parser.setDimensions(x, y);
 		
 		turno = true;
+		erro = false;
+		lastCapture = new int[] {-1, -1};
 		
 		vPecas = new Peca[y][x];
 		for (int i = 0; i < 8; i++) {
@@ -28,6 +31,13 @@ public class Tabuleiro {
 		}
 	}
 	
+	/**
+	 * Devole a peca na posicao (x, y) do tabuleiro.
+	 * 
+	 * @param x Posicao no eixo x
+	 * @param y Posicao no eixo y
+	 * @return Peca em (x, y) se posicao valida. Se nao null
+	 */
 	private Peca getPiece(int x, int y) {
 		if ((x >= 0 && x < 8) && (y >= 0 && y < 8))
 			return vPecas[y][x];
@@ -44,18 +54,23 @@ public class Tabuleiro {
 	 */
 	private void move(Peca pc, int source[], int target[]) {
 		int fatorX, fatorY, i;
+		boolean multiplaCap;
 		Peca caminho[];
 		
+		multiplaCap = lastCapture[0] == source[0] && lastCapture[1] == source[1] ? true : false;
+		
 		if (pc.branco != turno) {
-			System.out.println("Movimento Inválido. Turno das " + (turno ? "brancas." : "pretas"));
-			return;
+			// Se lastCapture == source eh continuacao da captura multipla. Logo eh valido
+			if (!multiplaCap) {
+				System.out.println("Movimento Inválido. Turno das " + (turno ? "brancas." : "pretas"));
+				return;				
+			}
 		}
 				
+		// Gera caminho. Multiplicar pelo fator garante que tamanho > 0
 		fatorY = target[1] - source[1] > 0 ? 1 : -1;
 		fatorX = target[0] - source[0] > 0 ? 1 : -1;
-		
-		// Gera caminho. Multiplicar pelo fator garante que tamanho > 0
-		caminho = new Peca[(target[0] - source[0]) * fatorX];
+		caminho = new Peca[(target[0] - source[0]) * fatorX];		
 		
 		i = 1;
 		while (source[0] + i * fatorX != target[0] + 1 * fatorX && source[1] + i * fatorY != target[1] + 1 * fatorY) {
@@ -65,12 +80,16 @@ public class Tabuleiro {
 		
 		if (!pc.isValid(source, target, caminho)) {
 			System.out.println("Movimento Invalido.");
+			erro = true;
 			return;
 		}
 		
+		lastCapture = new int[] {-1, -1}; // Reinicia lastCapture
 		for (int j = 0; j < caminho.length; j++) {
-			if (caminho[j] != null)
+			if (caminho[j] != null) {
 				capture(caminho[j], caminho[j].getPosition());
+				lastCapture = target;
+			}
 		}
 		
 		vPecas[source[1]][source[0]] = null;
@@ -79,7 +98,12 @@ public class Tabuleiro {
 		// FIX-ME: Utilizar instanceOf para evitar dar upgrade em dama
 		if ((target[1] == 7 && !pc.branco) || (target[1] == 0 && pc.branco))
 			upgrade(pc, target);
-		nextTurn();
+		
+		// Se eh multipla captura nao passa turno de novo
+		if (!multiplaCap)
+			nextTurn();
+		
+		erro = false;
 	}
 	
 	private void capture(Peca pc, int pos[]) {
@@ -115,7 +139,7 @@ public class Tabuleiro {
 	 * @param source posicao de saida da peca
 	 * @param target posicao de destino da peca
 	 */
-	public void movePiece(String source, String target) {
+	public void solicitaMovimento(String source, String target) {
 		int pos[][], sourceCord[], targetCord[];
 		Peca pc;
 		
@@ -132,11 +156,12 @@ public class Tabuleiro {
 			pc = vPecas[sourceCord[1]][sourceCord[0]];
 			move(pc, sourceCord, targetCord);
 		} else {
+			erro = true;
 			System.out.println("Movimento Invalido. Selecione uma peca valida");
 		}
 	}
 	
-	public void presentBoard() {
+	public void imprimirTabuleiro() {
 		String boardState = "";
 		
 		for (int i = 0; i < y; i++) {
@@ -161,5 +186,36 @@ public class Tabuleiro {
 		boardState += '\n';
 		
 		System.out.println(boardState);
+	}
+	
+	public String[] exportarArquivo() {
+		int pos = 0;
+		String estado[];
+		String casa;
+		Peca pc;
+		
+		if (erro) {
+			estado = new String[1];
+			estado[0] = "erro";
+			return estado;
+		}
+		
+		estado = new String[x*y];
+		for (int j = 0; j < x; j++) {
+			for (int i = 0; i < y; i++) {
+				pc = getPiece(j, i);
+				casa = new String("");
+				
+				// Gera posicao
+				casa += (char) (97 + j);
+				casa += y - i;
+				casa += pc == null ? '_' : pc.presentPiece();
+				
+				estado[pos] = casa;
+				pos++;
+			}
+		}
+		
+		return estado;
 	}
 }
